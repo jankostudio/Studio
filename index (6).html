@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Janko Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="author" content="Janko Studio">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=UnifrakturCook:wght@700&family=Pirata+One&family=Big+Shoulders+Display:wght@900&family=Bodoni+Moda:ital,opsz,wght@1,6..96,400&display=swap">
+<style>
+/* Layout: portafolio de estudio en una columna para móvil. Abre con una persiana metálica de tienda que sube y deja ver la portada, con el nombre en letra gótica enorme, cinta amarilla pegada y una banda inclinada de oficios que corre. Cinco trabajos (el primero a ancho completo) con pantallas dibujadas en CSS; al pulsar uno se abre una ficha dentro de la página. Proceso en cuatro pasos y contacto. Selector de idioma ES, PT, EN. Siempre oscuro gótico, sin variante clara. */
+:root {
+  --bg: #0C0A0D;
+  --surface: #16111B;
+  --fg: #ECE4E6;
+  --muted: #A69BA3;
+  --line: #2B2231;
+  --sun: #E9B04C;
+  --sea: #D8606F;
+  --on-sun: #1A1405;
+  --glow: rgba(179, 36, 59, 0.42);
+  --haze: rgba(74, 34, 96, 0.34);
+  --hard: rgba(0, 0, 0, 0.7);
+  --intro: 1.6s;
+  --font-display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --font-gothic: "Pirata One", "Old English Text MT", Blackletter, serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; overflow-x: hidden; touch-action: pan-y pinch-zoom; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  padding-block: 0 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  overflow-x: clip;
+  touch-action: pan-y pinch-zoom;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+h1, h2, h3, p, ul, ol { margin: 0; padding: 0; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.05; letter-spacing: -0.02em; }
+ul, ol { list-style: none; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--sea); outline-offset: 3px; }
+.wrap { max-width: 1040px; margin-inline: auto; }
+.label { font: 500 12px/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--sea); }
+.label::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 10px; background: var(--sun); transform: translateY(-1px) rotate(45deg); }
+
+/* Entrada: persiana metálica de tienda con el nombre pintado que sube y deja ver la página */
+.intro { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow: hidden; cursor: pointer;
+  background: radial-gradient(60% 50% at 50% 55%, rgba(179, 36, 59, 0.3), transparent 70%), repeating-linear-gradient(180deg, #1B1620 0 22px, #0C0A0D 22px 26px);
+  animation: lift 0.95s cubic-bezier(0.7, 0, 0.2, 1) 1.55s forwards; }
+.intro::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 30px; background: linear-gradient(180deg, #4A4452, #1B1620 60%, #0C0A0D); border-top: 2px solid #6B6275; }
+.intro .handle { position: absolute; left: 50%; bottom: 9px; z-index: 1; width: 64px; height: 12px; margin-left: -32px; border-radius: 6px; background: #8B8394; }
+.intro-in { display: grid; justify-items: center; gap: 14px; padding: 16px; max-width: 100%; text-align: center; }
+.intro .jj { display: flex; width: max-content; font: 400 clamp(4.6rem, 24vw, 13rem)/0.9 var(--font-gothic); color: #F4EDED; text-shadow: 0 0 30px rgba(179, 36, 59, 0.75); }
+.intro .jj i { font-style: normal; opacity: 0; animation: flick 0.9s steps(1, end) both; }
+.intro .jj i:nth-child(1) { animation-delay: 0.15s; }
+.intro .jj i:nth-child(2) { animation-delay: 0.3s; }
+.intro .jj i:nth-child(3) { animation-delay: 0.45s; }
+.intro .jj i:nth-child(4) { animation-delay: 0.6s; }
+.intro .jj i:nth-child(5) { animation-delay: 0.75s; }
+.intro .rule { width: 0; height: 2px; background: #B3243B; box-shadow: 0 0 14px #B3243B; animation: grow 0.55s ease 0.95s forwards; }
+.intro .studio { font: 500 clamp(0.8rem, 3.4vw, 1.1rem)/1 var(--font-mono); letter-spacing: 0.6em; padding-left: 0.6em; text-transform: uppercase; color: #E9B04C; opacity: 0; animation: fade 0.6s ease 1.05s forwards; }
+.intro .sub { font: 500 11px/1 var(--font-mono); letter-spacing: 0.22em; text-transform: uppercase; color: #A69BA3; opacity: 0; animation: fade 0.6s ease 1.2s forwards; }
+@keyframes flick { 0% { opacity: 0; } 12% { opacity: 1; } 20% { opacity: 0.15; } 30% { opacity: 1; } 38% { opacity: 0.4; } 100% { opacity: 1; } }
+@keyframes grow { to { width: min(60vw, 320px); } }
+@keyframes lift { to { transform: translateY(-100%); visibility: hidden; } }
+.intro.skip { display: none; }
+
+/* Cabecera */
+header.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 62px; }
+.brand { display: inline-flex; align-items: baseline; gap: 10px; text-decoration: none; }
+.brand b { font: 400 2.2rem/1 var(--font-gothic); letter-spacing: 0.01em; }
+.brand small { font: 500 10px/1 var(--font-mono); letter-spacing: 0.4em; text-transform: uppercase; color: var(--sun); }
+.top nav { display: flex; align-items: center; gap: 16px; }
+.top nav > a { font-size: 14px; font-weight: 500; text-decoration: none; color: var(--muted); }
+.top nav > a:hover { color: var(--fg); }
+.top nav > a.btn-sm { color: var(--on-sun); }
+@media (max-width: 560px) { .top nav > a:not(.btn-sm) { display: none; } .brand small { display: none; } }
+
+/* Selector de idioma */
+.lang { position: relative; }
+.btn-lang { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: transparent; color: var(--fg); border: 1px solid var(--line); border-radius: 3px; font: 500 12px/1 var(--font-mono); letter-spacing: 0.14em; cursor: pointer; }
+.btn-lang:hover, .btn-lang[aria-expanded="true"] { border-color: var(--sea); }
+.btn-lang svg { width: 10px; height: 10px; transition: transform 0.25s; }
+.btn-lang[aria-expanded="true"] svg { transform: rotate(180deg); }
+.lang-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 20; min-width: 176px; display: grid; background: var(--surface); border: 1px solid var(--line); box-shadow: 6px 6px 0 var(--hard); }
+.lang-menu button { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 46px; padding: 0 14px; background: transparent; border: 0; border-bottom: 1px solid var(--line); color: var(--fg); font: 700 1rem/1 var(--font-display); text-align: left; cursor: pointer; }
+.lang-menu button:last-child { border-bottom: 0; }
+.lang-menu button:hover { background: var(--bg); }
+.lang-menu button[aria-current="true"] { color: var(--sea); }
+.lang-menu small { font: 500 11px/1 var(--font-mono); letter-spacing: 0.14em; color: var(--muted); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 4px; font: 700 1rem/1 var(--font-body); text-decoration: none; cursor: pointer; border: 1.5px solid transparent; }
+.btn-main { background: var(--sun); color: var(--on-sun); }
+.btn-line { border-color: var(--line); background: transparent; color: var(--fg); }
+.btn-line:hover { border-color: var(--sea); }
+.btn-sm { min-height: 40px; padding: 0 16px; font-size: 14px; background: var(--sun); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.foot a { text-decoration: underline; text-underline-offset: 3px; }
+.foot a:hover { color: var(--sun); }
+
+/* Portada */
+.hero { position: relative; isolation: isolate; display: grid; justify-items: start; gap: 22px; padding-block: clamp(36px, 8vw, 80px) clamp(40px, 7vw, 64px); }
+.hero::before { content: ""; position: absolute; z-index: -1; top: -10%; bottom: -30%; left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); right: calc(-1 * max(16px, env(safe-area-inset-right, 0px))); background: radial-gradient(38% 44% at 70% 30%, var(--glow), transparent 100%), radial-gradient(36% 32% at 20% 88%, var(--haze), transparent 100%); pointer-events: none; }
+.hero > .label { animation: fade 1s var(--intro) both; }
+.wordmark { display: grid; gap: 12px; margin: 0; max-width: 100%; }
+.wordmark .j { display: flex; justify-self: start; width: max-content; padding-top: 0.06em; font: 400 clamp(5.2rem, 27vw, 15.5rem)/0.84 var(--font-gothic); letter-spacing: 0.005em; color: var(--fg); text-shadow: 0 0 38px var(--glow); }
+.wordmark .j i { display: inline-block; font-style: normal; animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.wordmark .j i:nth-child(1) { animation-delay: calc(var(--intro) + 0.05s); }
+.wordmark .j i:nth-child(2) { animation-delay: calc(var(--intro) + 0.13s); }
+.wordmark .j i:nth-child(3) { animation-delay: calc(var(--intro) + 0.21s); }
+.wordmark .j i:nth-child(4) { animation-delay: calc(var(--intro) + 0.29s); }
+.wordmark .j i:nth-child(5) { animation-delay: calc(var(--intro) + 0.37s); }
+.wordmark .s { display: flex; align-items: center; gap: 14px; padding-left: 0.4em; font: 500 clamp(0.8rem, 3.4vw, 1.2rem)/1 var(--font-mono); letter-spacing: 0.62em; text-transform: uppercase; color: var(--sun); animation: fade 1s calc(var(--intro) + 0.6s) both; }
+.wordmark .s::after { content: ""; flex: 1 1 auto; max-width: 160px; height: 1px; background: linear-gradient(90deg, var(--sun), transparent); }
+@keyframes rise { from { opacity: 0; transform: translateY(40%); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes slap { 0% { opacity: 0; transform: rotate(-9deg) scale(1.5); } 60% { opacity: 1; transform: rotate(-1deg) scale(0.96); } 100% { opacity: 1; transform: rotate(-2deg) scale(1); } }
+.tape { display: inline-block; transform: rotate(-2deg); background: var(--sun); color: var(--on-sun); font: 700 12px/1.3 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; padding: 8px 14px; box-shadow: 4px 4px 0 var(--hard); max-width: 100%; animation: slap 0.5s cubic-bezier(0.2, 0.8, 0.3, 1.2) calc(var(--intro) + 0.8s) both; }
+.hero .lead { font: 700 clamp(1.5rem, 5.4vw, 2.4rem)/1.12 var(--font-display); letter-spacing: -0.02em; max-width: 20ch; text-wrap: balance; animation: fade 1s calc(var(--intro) + 0.95s) both; }
+.hero .sub { color: var(--muted); max-width: 50ch; font-size: 1.05rem; animation: fade 1s calc(var(--intro) + 1.05s) both; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; animation: fade 1s calc(var(--intro) + 1.15s) both; }
+.coords { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 500 13px/1.4 var(--font-mono); color: var(--muted); animation: fade 1s calc(var(--intro) + 1.25s) both; }
+.coords b { color: var(--sea); font-weight: 500; }
+
+/* Banda inclinada de oficios */
+.marq { width: calc(100% + max(16px, env(safe-area-inset-left, 0px)) + max(16px, env(safe-area-inset-right, 0px))); margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); overflow: hidden; padding-block: 22px; }
+@media (min-width: 1100px) { .marq { width: 100vw; margin-left: calc(50% - 50vw); } }
+.band { width: 106%; margin-left: -3%; transform: rotate(-1.5deg); background: var(--fg); color: var(--bg); overflow: hidden; white-space: nowrap; border-block: 3px solid var(--bg); }
+.track { display: inline-flex; animation: marq 32s linear infinite; will-change: transform; }
+.band span { font: 800 clamp(1.3rem, 4vw, 1.7rem)/1 var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; padding: 12px 20px; }
+.band b { align-self: center; width: 8px; height: 8px; flex: none; background: var(--sun); transform: rotate(45deg); }
+@keyframes marq { to { transform: translateX(-50%); } }
+
+section { padding-block: clamp(44px, 8vw, 80px); border-top: 1px solid var(--line); scroll-margin-top: 72px; }
+.marq + section { border-top: 0; }
+.sec-head { display: grid; gap: 12px; margin-bottom: 36px; max-width: 60ch; }
+.sec-head h2 { font-size: clamp(2rem, 7vw, 3.2rem); font-weight: 800; }
+.sec-head p { color: var(--muted); }
+
+/* Trabajos */
+.works { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.work { display: flex; flex-direction: column; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; cursor: pointer; transition: transform 0.3s ease, border-color 0.3s ease; }
+.work:hover { transform: translateY(-4px); border-color: var(--sun); }
+.work-body { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px; min-width: 0; }
+.work-body header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.work-body h3 { font-size: 1.55rem; font-weight: 700; }
+.tag { font: 500 12px/1 var(--font-mono); padding: 4px 8px; border: 1px solid var(--line); border-radius: 3px; color: var(--sun); }
+.kind { font: 500 12px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--sea); }
+.work-body p { color: var(--muted); max-width: 52ch; }
+.feats { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; }
+.feats li::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 8px; background: var(--sun); transform: translateY(-1px) rotate(45deg); }
+.visit { margin-top: auto; padding: 6px 0 2px; font: 700 15px/1.4 var(--font-body); color: inherit; background: none; border: 0; border-bottom: 1.5px solid var(--sun); border-radius: 0; cursor: pointer; }
+.visit:hover { color: var(--sun); }
+@media (min-width: 760px) {
+  .works { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .work.wide { grid-column: 1 / -1; flex-direction: row; }
+  .work.wide .screen { flex: 1.15 1 0; aspect-ratio: auto; min-height: 340px; }
+  .work.wide .work-body { flex: 1 1 0; justify-content: center; padding: 32px; }
+}
+
+/* Ficha de un trabajo, dentro de la página */
+.modal { position: fixed; inset: 0; z-index: 90; display: grid; align-items: center; justify-items: center; overflow-y: auto; background: rgba(8, 6, 10, 0.84); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); padding: calc(16px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); animation: fadeIn 0.25s ease both; }
+.mpanel { position: relative; width: 100%; max-width: 720px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; box-shadow: 8px 8px 0 var(--hard); animation: pop 0.35s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+.mpanel .screen { aspect-ratio: 16 / 9; min-height: 220px; }
+.mbody { padding: 24px; gap: 12px; }
+.mbody h3 { font-size: clamp(1.8rem, 6vw, 2.4rem); }
+.mact { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.mclose { position: absolute; top: 10px; right: 10px; z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.35); background: rgba(12, 10, 13, 0.72); color: #F4EDED; font: 400 1.7rem/1 var(--font-body); cursor: pointer; }
+.mclose:hover { border-color: #E9B04C; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+/* Pantallas dibujadas: cada una usa los colores y la letra de su web */
+.screen { position: relative; display: grid; place-items: center; aspect-ratio: 16 / 10; max-width: 100%; overflow: hidden; text-align: center; }
+.screen .n { display: block; line-height: 0.95; }
+.screen .t { display: block; margin-top: 12px; }
+
+.s-padoca { background: radial-gradient(80% 60% at 15% 0%, #FBF0D0, rgba(251, 240, 208, 0) 60%), linear-gradient(180deg, #EBD9AE, #E2CD9F); color: #3F2A1A; padding: 20px; }
+.s-padoca .frame { display: grid; justify-items: center; gap: 6px; padding: clamp(26px, 6vw, 44px) clamp(24px, 6vw, 56px); border: 2px solid #B8861F; border-radius: 16px; box-shadow: inset 0 0 0 6px #EDDBB1, inset 0 0 0 7px rgba(184, 134, 31, 0.6); background: linear-gradient(180deg, #FBF3DD, #F3E5BF); max-width: 100%; }
+.s-padoca .n { font: italic 600 clamp(2.8rem, 10vw, 5rem)/1 "Cormorant Garamond", Georgia, serif; padding: 0 4px 6px; background: linear-gradient(100deg, #5E3F12 0%, #B8861F 28%, #E9C966 46%, #B8861F 64%, #5E3F12 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+.s-padoca .t { font: 700 12px/1.3 var(--font-body); letter-spacing: 0.22em; text-transform: uppercase; margin: 0; }
+.s-padoca .r { font: 500 13px/1 var(--font-mono); color: #6A5039; margin-top: 8px; }
+
+.s-lumbre { background: radial-gradient(70% 90% at 50% 0%, rgba(150, 190, 160, 0.2), transparent 70%), #18271F; color: #F3ECDA; }
+.s-lumbre .ring { position: absolute; width: min(66%, 260px); aspect-ratio: 1; border-radius: 50%; border: 1px dashed rgba(220, 188, 120, 0.55); animation: spin 60s linear infinite; }
+.s-lumbre .ring::after { content: ""; position: absolute; inset: 14%; border-radius: 50%; border: 1px solid rgba(220, 188, 120, 0.3); }
+.s-lumbre .copy-in { position: relative; }
+.s-lumbre .n { font: italic 400 clamp(2.6rem, 9vw, 3.8rem)/1 "Bodoni Moda", "Didot", Georgia, serif; color: #DCBC78; }
+.s-lumbre .t { font: 500 11px/1 var(--font-body); letter-spacing: 0.26em; text-transform: uppercase; color: #B4C1B6; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.s-asfalto { background: radial-gradient(60% 70% at 88% 30%, rgba(42, 98, 255, 0.22), transparent 70%), radial-gradient(55% 60% at 8% 95%, rgba(220, 32, 56, 0.2), transparent 70%), #0B0B0D; justify-items: start; padding-left: clamp(22px, 8vw, 48px); }
+.s-asfalto .n { font: 900 clamp(2.6rem, 11vw, 4.6rem)/0.86 "Big Shoulders Display", Impact, "Arial Narrow", sans-serif; text-transform: uppercase; text-align: left; color: #F1EEE8; }
+.s-asfalto .n i { display: block; font-style: normal; }
+.s-asfalto .n i:nth-child(2) { color: transparent; -webkit-text-stroke: 1.5px #F1EEE8; }
+.s-asfalto .n i:nth-child(3) { color: #DC2038; }
+.s-asfalto .t { font: 500 11px/1 var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: #92929D; text-align: left; }
+/* La barra: el tubo recorta y las rayas se mueven solo con transform, sin repintar, para que ruede sin saltos */
+.pole { position: absolute; right: clamp(22px, 10vw, 60px); top: 50%; width: 30px; height: 72%; margin-top: -36%; border-radius: 8px; border: 2px solid #3A3F46; overflow: hidden; isolation: isolate; background: #F4F1EA; box-shadow: 0 0 26px rgba(220, 32, 56, 0.3), 0 0 36px rgba(42, 98, 255, 0.25); }
+.pole .stripes { position: absolute; left: 0; right: 0; top: -114px; height: calc(100% + 114px); background: repeating-linear-gradient(-45deg, #DC2038 0 20px, #F4F1EA 20px 40px, #2A62FF 40px 60px, #F4F1EA 60px 80px); animation: roll 2.4s linear infinite; will-change: transform; backface-visibility: hidden; }
+.pole::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.3) 28%, rgba(255, 255, 255, 0) 48%, rgba(0, 0, 0, 0.5)); }
+@keyframes roll { to { transform: translate3d(0, 113.137px, 0); } }
+
+.s-escultor { background: radial-gradient(60% 70% at 25% 30%, rgba(201, 174, 130, 0.14), transparent 70%), #1F2125; }
+.s-escultor .n { font: italic 500 clamp(2.4rem, 9vw, 3.6rem)/0.95 "Cormorant Garamond", Georgia, serif; padding-bottom: 0.06em; background: linear-gradient(180deg, #FBF9F4 0%, #E4DFD4 52%, #B3AD9F 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+.s-escultor .t { font: 500 11px/1 var(--font-body); letter-spacing: 0.5em; padding-left: 0.5em; text-transform: uppercase; color: #C9AE82; }
+.s-escultor .t::after { content: ""; display: block; width: 90px; height: 1px; margin: 16px auto 0; background: linear-gradient(90deg, transparent, #C9AE82, transparent); }
+
+.s-janko { background: radial-gradient(90% 70% at 88% 0%, rgba(143, 29, 47, 0.3), transparent 65%), radial-gradient(60% 50% at 0% 100%, rgba(74, 34, 96, 0.25), transparent 70%), #0C0A0D; }
+.s-janko .n { font: 700 clamp(4rem, 17vw, 6.4rem)/0.95 "UnifrakturCook", "Old English Text MT", serif; color: #F4EDED; text-shadow: 0 0 28px rgba(179, 36, 59, 0.5); }
+.s-janko .t { font: 500 11px/1 var(--font-mono); letter-spacing: 0.3em; text-transform: uppercase; color: #D8606F; }
+
+/* Proceso */
+.steps { display: grid; grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--line); }
+.steps li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 4px 12px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.steps .n { grid-row: span 2; font: 500 1.4rem/1.2 var(--font-mono); color: var(--sun); font-variant-numeric: tabular-nums; }
+.steps h3 { font-size: 1.3rem; font-weight: 700; }
+.steps p { color: var(--muted); max-width: 52ch; }
+@media (min-width: 900px) {
+  .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; border-top: 0; }
+  .steps li { display: block; padding: 22px 0 0; border-bottom: 0; border-top: 1px solid var(--line); }
+  .steps .n { display: block; margin-bottom: 12px; }
+}
+
+/* Contacto */
+.contact { display: grid; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: clamp(24px, 5vw, 40px) clamp(20px, 5vw, 40px); }
+.contact h2 { font-size: clamp(1.9rem, 7vw, 2.8rem); font-weight: 800; }
+.contact p { color: var(--muted); max-width: 52ch; }
+.phone-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.phone { font: 500 clamp(1.35rem, 6vw, 1.9rem)/1.1 var(--font-mono); user-select: all; font-variant-numeric: tabular-nums; }
+.copy { min-height: 44px; padding: 0 16px; border-radius: 4px; border: 1.5px solid var(--line); background: transparent; color: var(--fg); font: 700 14px/1 var(--font-body); cursor: pointer; }
+.copy:hover { border-color: var(--sea); }
+.where { font: 500 13px/1.4 var(--font-mono); color: var(--muted); }
+
+footer.foot { padding-top: 28px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
+
+/* Aparición al deslizar: todo se ve por defecto; solo lo que queda fuera de pantalla al cargar entra al llegar */
+.rv { transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.rv.pre { opacity: 0.15; transform: translateY(26px); }
+@media (prefers-reduced-motion: reduce) {
+  :root { --intro: 0s; }
+  html { scroll-behavior: auto; }
+  .intro { display: none; }
+  .rv, .work { transition: none; }
+  .track, .pole .stripes, .s-lumbre .ring, .wordmark .j i, .wordmark .s, .tape, .hero > .label, .hero .lead, .hero .sub, .cta-row, .coords, .modal, .mpanel { animation: none; }
+}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro-in">
+    <span class="jj"><i>J</i><i>a</i><i>n</i><i>k</i><i>o</i></span>
+    <span class="rule"></span>
+    <span class="studio">Studio</span>
+    <span class="sub">Almería · 36.84° N</span>
+  </div>
+  <span class="handle"></span>
+</div>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="#inicio" aria-label="Janko Studio"><b>Janko</b><small>Studio</small></a>
+      <nav aria-label="Principal">
+        <a href="#trabajos" data-i18n="nav_works">Trabajos</a>
+        <a href="#proceso" data-i18n="nav_process">Proceso</a>
+        <div class="lang">
+          <button class="btn-lang" id="langBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="Idioma" data-i18n-aria="lang_label">
+            <span id="langCur">ES</span>
+            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M1 3l4 4 4-4"/></svg>
+          </button>
+          <div class="lang-menu" id="langMenu" hidden>
+            <button type="button" data-lang="es">Español <small>ES</small></button>
+            <button type="button" data-lang="pt">Português <small>PT</small></button>
+            <button type="button" data-lang="en">English <small>EN</small></button>
+          </div>
+        </div>
+        <a class="btn btn-sm" href="#contacto" data-i18n="nav_demo">Demo gratis</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <div class="hero">
+      <p class="label" data-i18n="hero_label">Diseño web · Almería</p>
+      <h1 class="wordmark" aria-label="Janko Studio">
+        <span class="j" aria-hidden="true"><i>J</i><i>a</i><i>n</i><i>k</i><i>o</i></span>
+        <span class="s" aria-hidden="true">Studio</span>
+      </h1>
+      <span class="tape" data-i18n="tape">Webs para negocios locales</span>
+      <p class="lead" data-i18n="lead">Páginas web con estilo propio.</p>
+      <p class="sub" data-i18n="sub">Cinco webs hechas a medida, de tatuajes a restaurante. Cada una con su paleta, su letra y su forma de enseñar el negocio, y todas pensadas para el móvil.</p>
+      <div class="cta-row">
+        <a class="btn btn-main" href="#trabajos" data-i18n="cta_works">Ver trabajos</a>
+        <a class="btn btn-line" href="#contacto" data-i18n="cta_demo">Pídeme una demo gratis</a>
+      </div>
+      <p class="coords"><span><b>36.84° N · 2.46° O</b></span><span data-i18n="where">España · Portugal · y más</span></p>
+    </div>
+
+    <div class="marq" aria-hidden="true">
+      <div class="band"><div class="track" id="track">
+        <span>Cafetería</span><b></b><span>Restaurante</span><b></b><span>Barbería</span><b></b><span>Escultura</span><b></b><span>Tatuajes</span><b></b>
+      </div></div>
+    </div>
+
+    <section id="trabajos">
+      <div class="sec-head rv">
+        <p class="label" data-i18n="nav_works">Trabajos</p>
+        <h2 data-i18n="works_h">Cinco webs, cinco estilos distintos.</h2>
+        <p data-i18n="works_p">Algunas son demos hechas para enseñar cómo quedaría la web de un negocio. Cada una parte de lo que el negocio necesita contar.</p>
+      </div>
+
+      <div class="works" id="works">
+
+        <article class="work wide rv" data-url="https://jankostudio.github.io/La-Padoca/">
+          <div class="screen s-padoca" role="img" data-name="La Padoca" aria-label="Vista previa de la web de La Padoca">
+            <div class="frame">
+              <span class="n">La Padoca</span>
+              <span class="t" data-i18n="t_pad">Cafetería · Pastelería</span>
+              <span class="r" data-i18n="r_pad">★ 4,4 · Retamar</span>
+            </div>
+          </div>
+          <div class="work-body">
+            <header><span class="kind" data-i18n="k_cafe">Cafetería</span><span class="tag" data-i18n="tag_demo">Demo</span></header>
+            <h3>La Padoca</h3>
+            <p data-i18n="d_pad">Web para una cafetería de Retamar. Fondo claro en tonos arena y dorado, como el logo, con fotos de la comida, horario y encargos de tartas por WhatsApp.</p>
+            <ul class="feats"><li data-i18n="f_pad1">Carta con fotos</li><li data-i18n="f_pad2">Horario</li><li data-i18n="f_pad3">Encargos por WhatsApp</li><li data-i18n="f_pad4">Animaciones al deslizar</li></ul>
+            <button class="visit" type="button" data-open data-i18n="view">Ver detalle</button>
+          </div>
+        </article>
+
+        <article class="work rv" data-url="https://jankostudio.github.io/Restaurantee/">
+          <div class="screen s-lumbre" role="img" data-name="Lumbre" aria-label="Vista previa de la web de Lumbre">
+            <span class="ring"></span>
+            <div class="copy-in"><span class="n">Lumbre</span><span class="t" data-i18n="t_lum">Restaurante</span></div>
+          </div>
+          <div class="work-body">
+            <header><span class="kind" data-i18n="k_rest">Restaurante</span><span class="tag" data-i18n="tag_ej">Ejemplo</span></header>
+            <h3>Lumbre</h3>
+            <p data-i18n="d_lum">Un restaurante elegante en verde botella y latón. La carta se separa por categorías y deja ver el menú degustación.</p>
+            <ul class="feats"><li data-i18n="f_lum1">Carta por pestañas</li><li data-i18n="f_lum2">Menú degustación</li><li data-i18n="f_lum3">Galería</li><li data-i18n="f_lum4">Reservas</li></ul>
+            <button class="visit" type="button" data-open data-i18n="view">Ver detalle</button>
+          </div>
+        </article>
+
+        <article class="work rv" data-url="https://jankostudio.github.io/Barberia-Demo/">
+          <div class="screen s-asfalto" role="img" data-name="Asfalto Barber Club" aria-label="Vista previa de la web de Asfalto Barber Club">
+            <div>
+              <span class="n"><i>Asfalto</i><i>Barber</i><i>Club</i></span>
+              <span class="t" data-i18n="t_asf">Corte · Barba · Cita</span>
+            </div>
+            <span class="pole"><span class="stripes"></span></span>
+          </div>
+          <div class="work-body">
+            <header><span class="kind" data-i18n="k_barb">Barbería</span><span class="tag" data-i18n="tag_pla">Plantilla</span></header>
+            <h3>Asfalto Barber Club</h3>
+            <p data-i18n="d_asf">Plantilla de barbería con estilo oscuro y urbano y un barber pole en movimiento. Sirve de modelo para enseñar a otras barberías.</p>
+            <ul class="feats"><li data-i18n="f_asf1">Servicios y precios</li><li data-i18n="f_asf2">Equipo</li><li data-i18n="f_asf3">Horario y mapa</li><li data-i18n="f_asf4">Reseñas</li></ul>
+            <button class="visit" type="button" data-open data-i18n="view">Ver detalle</button>
+          </div>
+        </article>
+
+        <article class="work rv" data-url="https://jankostudio.github.io/Alberto-Sculptor/">
+          <div class="screen s-escultor" role="img" data-name="Alberto Gedeón" aria-label="Vista previa de la web de Alberto Gedeón">
+            <div><span class="n">Alberto Gedeón</span><span class="t">Sculptor</span></div>
+          </div>
+          <div class="work-body">
+            <header><span class="kind" data-i18n="k_escu">Escultura</span></header>
+            <h3>Alberto Gedeón</h3>
+            <p data-i18n="d_alb">Portafolio de un escultor de mármol. Una sala de galería en penumbra donde la obra es lo único que brilla.</p>
+            <ul class="feats"><li data-i18n="f_alb1">Galería de obra</li><li data-i18n="f_alb2">Taller y trayectoria</li><li data-i18n="f_alb3">Encargos</li><li data-i18n="f_alb4">Selector de idioma</li></ul>
+            <button class="visit" type="button" data-open data-i18n="view">Ver detalle</button>
+          </div>
+        </article>
+
+        <article class="work rv" data-url="">
+          <div class="screen s-janko" role="img" data-name="Janko" aria-label="Vista previa de la web de Janko">
+            <div><span class="n">Janko</span><span class="t" data-i18n="t_jan">Tatuajes · Reservas</span></div>
+          </div>
+          <div class="work-body">
+            <header><span class="kind" data-i18n="k_tatu">Tatuajes</span></header>
+            <h3>Janko</h3>
+            <p data-i18n="d_jan">Estudio de tatuajes en rojo sangre sobre negro y letra gótica, con una luna y ceniza que flotan en la portada.</p>
+            <ul class="feats"><li data-i18n="f_jan1">Estilos</li><li data-i18n="f_jan2">Proceso</li><li data-i18n="f_jan3">Flash dibujado</li><li data-i18n="f_jan4">Reserva por WhatsApp</li><li data-i18n="f_jan5">4 idiomas</li></ul>
+            <button class="visit" type="button" data-open data-i18n="view">Ver detalle</button>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="proceso">
+      <div class="sec-head rv">
+        <p class="label" data-i18n="nav_process">Proceso</p>
+        <h2 data-i18n="proc_h">Primero la demo, después decides.</h2>
+      </div>
+      <ol class="steps">
+        <li class="rv"><span class="n">1</span><h3 data-i18n="s1h">Demo gratis</h3><p data-i18n="s1p">Me cuentas qué hace tu negocio y te enseño una web de ejemplo con tu nombre.</p></li>
+        <li class="rv"><span class="n">2</span><h3 data-i18n="s2h">Ajustes</h3><p data-i18n="s2p">Cambiamos textos, fotos y colores hasta que te guste cómo queda.</p></li>
+        <li class="rv"><span class="n">3</span><h3 data-i18n="s3h">Publicación</h3><p data-i18n="s3p">La web sale con tu dominio y se ve bien en cualquier móvil.</p></li>
+        <li class="rv"><span class="n">4</span><h3 data-i18n="s4h">Mantenimiento</h3><p data-i18n="s4p">Si quieres, yo cambio la carta, los horarios y las fotos cuando haga falta.</p></li>
+      </ol>
+    </section>
+
+    <section id="contacto">
+      <div class="contact rv">
+        <p class="label" data-i18n="sec_contact">Contacto</p>
+        <h2 data-i18n="c_h">¿Hablamos?</h2>
+        <p data-i18n="c_p">Escríbeme por WhatsApp y te preparo una demo con tu negocio, sin compromiso.</p>
+        <div class="phone-row">
+          <span class="phone" id="tel">+34 656 311 701</span>
+          <button class="copy" id="copy" type="button" data-i18n="copy">Copiar número</button>
+          <a class="btn btn-main" href="https://wa.me/34656311701" target="_blank" rel="noopener" data-i18n="wa">Abrir WhatsApp</a>
+          <a class="btn btn-line" href="https://www.instagram.com/janko.studioo?psln=OGdqdzRrb3AwN3pn" target="_blank" rel="noopener" aria-label="Instagram @janko.studioo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.4" cy="6.6" r="0.9" fill="currentColor" stroke="none"></circle></svg>
+            Instagram
+          </a>
+        </div>
+        <p class="where" data-i18n="where">España · Portugal · y más</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>© Janko Studio · <a href="https://www.instagram.com/janko.studioo?psln=OGdqdzRrb3AwN3pn" target="_blank" rel="noopener">@janko.studioo</a></span>
+    <span data-i18n="tape">Webs para negocios locales</span>
+  </footer>
+
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="mpanel" id="mPanel"></div>
+</div>
+
+<script>
+(function () {
+  var D = {
+    es: {
+      nav_works: "Trabajos", nav_process: "Proceso", nav_demo: "Demo gratis", lang_label: "Idioma",
+      hero_label: "Diseño web · Almería", tape: "Webs para negocios locales", lead: "Páginas web con estilo propio.",
+      sub: "Cinco webs hechas a medida, de tatuajes a restaurante. Cada una con su paleta, su letra y su forma de enseñar el negocio, y todas pensadas para el móvil.",
+      cta_works: "Ver trabajos", cta_demo: "Pídeme una demo gratis", where: "España · Portugal · y más",
+      marq: ["Cafetería", "Restaurante", "Barbería", "Escultura", "Tatuajes"],
+      works_h: "Cinco webs, cinco estilos distintos.",
+      works_p: "Algunas son demos hechas para enseñar cómo quedaría la web de un negocio. Cada una parte de lo que el negocio necesita contar.",
+      view: "Ver detalle", cta_like: "Quiero una web así", visit: "Visitar web", close: "Cerrar", prev: "Vista previa de la web de",
+      k_cafe: "Cafetería", k_rest: "Restaurante", k_barb: "Barbería", k_escu: "Escultura", k_tatu: "Tatuajes",
+      tag_demo: "Demo", tag_ej: "Ejemplo", tag_pla: "Plantilla",
+      d_pad: "Web para una cafetería de Retamar. Fondo claro en tonos arena y dorado, como el logo, con fotos de la comida, horario y encargos de tartas por WhatsApp.",
+      d_lum: "Un restaurante elegante en verde botella y latón. La carta se separa por categorías y deja ver el menú degustación.",
+      d_asf: "Plantilla de barbería con estilo oscuro y urbano y un barber pole en movimiento. Sirve de modelo para enseñar a otras barberías.",
+      d_alb: "Portafolio de un escultor de mármol. Una sala de galería en penumbra donde la obra es lo único que brilla.",
+      d_jan: "Estudio de tatuajes en rojo sangre sobre negro y letra gótica, con una luna y ceniza que flotan en la portada.",
+      f_pad1: "Carta con fotos", f_pad2: "Horario", f_pad3: "Encargos por WhatsApp", f_pad4: "Animaciones al deslizar",
+      f_lum1: "Carta por pestañas", f_lum2: "Menú degustación", f_lum3: "Galería", f_lum4: "Reservas",
+      f_asf1: "Servicios y precios", f_asf2: "Equipo", f_asf3: "Horario y mapa", f_asf4: "Reseñas",
+      f_alb1: "Galería de obra", f_alb2: "Taller y trayectoria", f_alb3: "Encargos", f_alb4: "Selector de idioma",
+      f_jan1: "Estilos", f_jan2: "Proceso", f_jan3: "Flash dibujado", f_jan4: "Reserva por WhatsApp", f_jan5: "4 idiomas",
+      t_pad: "Cafetería · Pastelería", r_pad: "★ 4,4 · Retamar", t_lum: "Restaurante", t_asf: "Corte · Barba · Cita", t_jan: "Tatuajes · Reservas",
+      proc_h: "Primero la demo, después decides.",
+      s1h: "Demo gratis", s1p: "Me cuentas qué hace tu negocio y te enseño una web de ejemplo con tu nombre.",
+      s2h: "Ajustes", s2p: "Cambiamos textos, fotos y colores hasta que te guste cómo queda.",
+      s3h: "Publicación", s3p: "La web sale con tu dominio y se ve bien en cualquier móvil.",
+      s4h: "Mantenimiento", s4p: "Si quieres, yo cambio la carta, los horarios y las fotos cuando haga falta.",
+      sec_contact: "Contacto", c_h: "¿Hablamos?",
+      c_p: "Escríbeme por WhatsApp y te preparo una demo con tu negocio, sin compromiso.",
+      copy: "Copiar número", copied: "Copiado", select: "Selecciona el número", wa: "Abrir WhatsApp"
+    },
+    pt: {
+      nav_works: "Trabalhos", nav_process: "Processo", nav_demo: "Demo grátis", lang_label: "Idioma",
+      hero_label: "Design web · Almería", tape: "Sites para negócios locais", lead: "Sites com estilo próprio.",
+      sub: "Cinco sites feitos por medida, de tatuagens a restaurante. Cada um com a sua paleta, a sua letra e a sua forma de mostrar o negócio, e todos pensados para o telemóvel.",
+      cta_works: "Ver trabalhos", cta_demo: "Peça-me uma demo grátis", where: "Espanha · Portugal · e mais",
+      marq: ["Café", "Restaurante", "Barbearia", "Escultura", "Tatuagens"],
+      works_h: "Cinco sites, cinco estilos diferentes.",
+      works_p: "Alguns são demos feitas para mostrar como ficaria o site de um negócio. Cada um parte do que o negócio precisa de contar.",
+      view: "Ver detalhe", cta_like: "Quero um site assim", visit: "Visitar site", close: "Fechar", prev: "Pré-visualização do site de",
+      k_cafe: "Café", k_rest: "Restaurante", k_barb: "Barbearia", k_escu: "Escultura", k_tatu: "Tatuagens",
+      tag_demo: "Demo", tag_ej: "Exemplo", tag_pla: "Modelo",
+      d_pad: "Site para um café de Retamar. Fundo claro em tons de areia e dourado, como o logótipo, com fotos da comida, horário e encomendas de bolos por WhatsApp.",
+      d_lum: "Um restaurante elegante em verde-garrafa e latão. O menu separa-se por categorias e mostra o menu de degustação.",
+      d_asf: "Modelo de barbearia com estilo escuro e urbano e um barber pole em movimento. Serve de exemplo para mostrar a outras barbearias.",
+      d_alb: "Portefólio de um escultor de mármore. Uma sala de galeria na penumbra onde a obra é a única coisa que brilha.",
+      d_jan: "Estúdio de tatuagens em vermelho-sangue sobre preto e letra gótica, com uma lua e cinza a flutuar na capa.",
+      f_pad1: "Menu com fotos", f_pad2: "Horário", f_pad3: "Encomendas por WhatsApp", f_pad4: "Animações ao deslizar",
+      f_lum1: "Menu por separadores", f_lum2: "Menu de degustação", f_lum3: "Galeria", f_lum4: "Reservas",
+      f_asf1: "Serviços e preços", f_asf2: "Equipa", f_asf3: "Horário e mapa", f_asf4: "Avaliações",
+      f_alb1: "Galeria de obras", f_alb2: "Ateliê e percurso", f_alb3: "Encomendas", f_alb4: "Seletor de idioma",
+      f_jan1: "Estilos", f_jan2: "Processo", f_jan3: "Flash desenhado", f_jan4: "Reserva por WhatsApp", f_jan5: "4 idiomas",
+      t_pad: "Café · Pastelaria", r_pad: "★ 4,4 · Retamar", t_lum: "Restaurante", t_asf: "Corte · Barba · Marcação", t_jan: "Tatuagens · Reservas",
+      proc_h: "Primeiro a demo, depois decides.",
+      s1h: "Demo grátis", s1p: "Contas-me o que faz o teu negócio e mostro-te um site de exemplo com o teu nome.",
+      s2h: "Ajustes", s2p: "Mudamos textos, fotos e cores até gostares de como fica.",
+      s3h: "Publicação", s3p: "O site sai com o teu domínio e vê-se bem em qualquer telemóvel.",
+      s4h: "Manutenção", s4p: "Se quiseres, eu mudo o menu, os horários e as fotos quando for preciso.",
+      sec_contact: "Contacto", c_h: "Falamos?",
+      c_p: "Escreve-me por WhatsApp e preparo-te uma demo com o teu negócio, sem compromisso.",
+      copy: "Copiar número", copied: "Copiado", select: "Seleciona o número", wa: "Abrir WhatsApp"
+    },
+    en: {
+      nav_works: "Work", nav_process: "Process", nav_demo: "Free demo", lang_label: "Language",
+      hero_label: "Web design · Almería", tape: "Websites for local businesses", lead: "Websites with a style of their own.",
+      sub: "Five custom-made websites, from tattoos to a restaurant. Each one has its own palette, its own lettering and its own way of showing the business, and all are built for mobile.",
+      cta_works: "See the work", cta_demo: "Ask me for a free demo", where: "Spain · Portugal · and more",
+      marq: ["Café", "Restaurant", "Barbershop", "Sculpture", "Tattoos"],
+      works_h: "Five websites, five different styles.",
+      works_p: "Some are demos made to show how a business website would look. Each one starts from what the business needs to say.",
+      view: "View details", cta_like: "I want a site like this", visit: "Visit site", close: "Close", prev: "Preview of the website for",
+      k_cafe: "Café", k_rest: "Restaurant", k_barb: "Barbershop", k_escu: "Sculpture", k_tatu: "Tattoos",
+      tag_demo: "Demo", tag_ej: "Example", tag_pla: "Template",
+      d_pad: "Website for a café in Retamar. Light background in sand and gold, like the logo, with food photos, opening hours and cake orders by WhatsApp.",
+      d_lum: "An elegant restaurant in bottle green and brass. The menu is split by category and shows the tasting menu.",
+      d_asf: "Barbershop template with a dark, urban style and a moving barber pole. It works as a model to show other barbershops.",
+      d_alb: "Portfolio of a marble sculptor. A dimly lit gallery room where the work is the only thing that shines.",
+      d_jan: "Tattoo studio in blood red on black with gothic lettering, with a moon and ash floating on the cover.",
+      f_pad1: "Menu with photos", f_pad2: "Opening hours", f_pad3: "Orders by WhatsApp", f_pad4: "Scroll animations",
+      f_lum1: "Menu in tabs", f_lum2: "Tasting menu", f_lum3: "Gallery", f_lum4: "Bookings",
+      f_asf1: "Services and prices", f_asf2: "Team", f_asf3: "Hours and map", f_asf4: "Reviews",
+      f_alb1: "Gallery of works", f_alb2: "Studio and career", f_alb3: "Commissions", f_alb4: "Language switch",
+      f_jan1: "Styles", f_jan2: "Process", f_jan3: "Hand-drawn flash", f_jan4: "Booking by WhatsApp", f_jan5: "4 languages",
+      t_pad: "Café · Bakery", r_pad: "★ 4.4 · Retamar", t_lum: "Restaurant", t_asf: "Cut · Beard · Booking", t_jan: "Tattoos · Bookings",
+      proc_h: "Demo first, then you decide.",
+      s1h: "Free demo", s1p: "You tell me what your business does and I show you a sample website with your name on it.",
+      s2h: "Tweaks", s2p: "We change texts, photos and colors until you like how it looks.",
+      s3h: "Launch", s3p: "The site goes live on your domain and looks good on any phone.",
+      s4h: "Upkeep", s4p: "If you want, I update the menu, hours and photos whenever needed.",
+      sec_contact: "Contact", c_h: "Shall we talk?",
+      c_p: "Message me on WhatsApp and I will prepare a demo with your business, no strings attached.",
+      copy: "Copy number", copied: "Copied", select: "Select the number", wa: "Open WhatsApp"
+    }
+  };
+
+  var lang = "es";
+  try { var saved = localStorage.getItem("janko-lang"); if (saved && D[saved]) lang = saved; } catch (e) {}
+  function t(k) { return (D[lang] && D[lang][k]) || D.es[k] || ""; }
+  function all(sel) { return [].slice.call(document.querySelectorAll(sel)); }
+
+  var track = document.getElementById("track");
+  var langBtn = document.getElementById("langBtn");
+  var langMenu = document.getElementById("langMenu");
+  var copyBtn = document.getElementById("copy");
+  var modal = document.getElementById("modal");
+  var panel = document.getElementById("mPanel");
+  var lastFocus = null;
+
+  function apply() {
+    document.documentElement.lang = lang;
+    all("[data-i18n]").forEach(function (el) { var v = t(el.getAttribute("data-i18n")); if (v) el.textContent = v; });
+    all("[data-i18n-aria]").forEach(function (el) { el.setAttribute("aria-label", t(el.getAttribute("data-i18n-aria"))); });
+    all(".screen[data-name]").forEach(function (el) { el.setAttribute("aria-label", t("prev") + " " + el.getAttribute("data-name")); });
+    var one = t("marq").map ? D[lang].marq.map(function (w) { return "<span>" + w + "</span><b></b>"; }).join("") : "";
+    track.innerHTML = one + one + one + one;
+    document.getElementById("langCur").textContent = lang.toUpperCase();
+    all("#langMenu button").forEach(function (b) { b.setAttribute("aria-current", b.getAttribute("data-lang") === lang ? "true" : "false"); });
+  }
+
+  function setLang(l) {
+    lang = l;
+    try { localStorage.setItem("janko-lang", l); } catch (e) {}
+    apply();
+  }
+
+  langBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    var open = langMenu.hidden;
+    langMenu.hidden = !open;
+    langBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  langMenu.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-lang]");
+    if (!b) return;
+    setLang(b.getAttribute("data-lang"));
+    langMenu.hidden = true;
+    langBtn.setAttribute("aria-expanded", "false");
+  });
+  document.addEventListener("click", function () {
+    if (!langMenu.hidden) { langMenu.hidden = true; langBtn.setAttribute("aria-expanded", "false"); }
+  });
+
+  /* Ficha de trabajo dentro de la página */
+  function openModal(card, opener) {
+    var url = card.getAttribute("data-url") || "";
+    panel.innerHTML = "";
+    var close = document.createElement("button");
+    close.type = "button"; close.className = "mclose"; close.innerHTML = "&times;";
+    close.setAttribute("data-i18n-aria", "close");
+    panel.appendChild(close);
+    panel.appendChild(card.querySelector(".screen").cloneNode(true));
+    var body = document.createElement("div");
+    body.className = "work-body mbody";
+    var head = document.createElement("header");
+    head.appendChild(card.querySelector(".kind").cloneNode(true));
+    var tg = card.querySelector(".tag");
+    if (tg) head.appendChild(tg.cloneNode(true));
+    body.appendChild(head);
+    var h = card.querySelector("h3").cloneNode(true);
+    h.id = "mTitle";
+    body.appendChild(h);
+    body.appendChild(card.querySelector(".work-body p").cloneNode(true));
+    body.appendChild(card.querySelector(".feats").cloneNode(true));
+    var act = document.createElement("div");
+    act.className = "mact";
+    var like = document.createElement("button");
+    like.type = "button"; like.className = "btn btn-main"; like.setAttribute("data-i18n", "cta_like"); like.setAttribute("data-go", "contact");
+    act.appendChild(like);
+    if (url) {
+      var a = document.createElement("a");
+      a.className = "btn btn-line"; a.href = url; a.target = "_blank"; a.rel = "noopener"; a.setAttribute("data-i18n", "visit");
+      act.appendChild(a);
+    }
+    body.appendChild(act);
+    panel.appendChild(body);
+    apply();
+    lastFocus = opener || null;
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    close.focus();
+  }
+  function closeModal() {
+    if (modal.hidden) return;
+    modal.hidden = true;
+    document.body.style.overflow = "";
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  document.getElementById("works").addEventListener("click", function (e) {
+    var card = e.target.closest(".work");
+    if (!card) return;
+    openModal(card, card.querySelector("[data-open]"));
+  });
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal || e.target.closest(".mclose")) { closeModal(); return; }
+    if (e.target.closest("[data-go]")) {
+      closeModal();
+      var c = document.getElementById("contacto");
+      if (c && c.scrollIntoView) c.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeModal();
+      if (!langMenu.hidden) { langMenu.hidden = true; langBtn.setAttribute("aria-expanded", "false"); }
+    }
+    if (e.key === "Tab" && !modal.hidden) {
+      var f = [].slice.call(panel.querySelectorAll("button, a[href]"));
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  /* Copiar número */
+  var tel = document.getElementById("tel");
+  copyBtn.addEventListener("click", function () {
+    var txt = tel.textContent.replace(/\s/g, "");
+    function done(ok) {
+      copyBtn.textContent = ok ? t("copied") : t("select");
+      setTimeout(function () { copyBtn.textContent = t("copy"); }, 1800);
+    }
+    try {
+      navigator.clipboard.writeText(txt).then(function () { done(true); }, function () {
+        try { window.getSelection().selectAllChildren(tel); } catch (e) {}
+        done(false);
+      });
+    } catch (e) {
+      try { window.getSelection().selectAllChildren(tel); } catch (e2) {}
+      done(false);
+    }
+  });
+
+  /* Entrada: se puede saltar con un toque */
+  var intro = document.getElementById("intro");
+  if (intro) intro.addEventListener("click", function () { intro.classList.add("skip"); });
+
+  apply();
+
+  /* Ajusta el título al ancho disponible para que nunca se salga de la pantalla */
+  function fit(el, avail) {
+    if (!el || avail <= 0) return;
+    el.style.fontSize = "";
+    var w = el.getBoundingClientRect().width;
+    if (w > avail) {
+      var base = parseFloat(getComputedStyle(el).fontSize);
+      el.style.fontSize = Math.floor(base * avail / w) + "px";
+    }
+  }
+  function fitAll() {
+    var root = document.documentElement.clientWidth;
+    var hero = document.querySelector(".hero");
+    fit(document.querySelector(".wordmark .j"), hero ? hero.clientWidth : root - 32);
+    fit(document.querySelector(".intro .jj"), root * 0.84);
+  }
+  fitAll();
+  window.addEventListener("resize", fitAll);
+  window.addEventListener("load", fitAll);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+
+  /* Aparición al deslizar */
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) return;
+  var vh = window.innerHeight;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.remove("pre"); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  all(".rv").forEach(function (el) {
+    if (el.getBoundingClientRect().top > vh * 0.9) { el.classList.add("pre"); io.observe(el); }
+  });
+})();
+</script>
+</body>
+</html>
